@@ -8,7 +8,7 @@ import { compile } from '@ton/blueprint';
 import { randomAddress, getRandomTon, differentAddress, getRandomInt, testJettonTransfer, testJettonInternalTransfer, testJettonNotification, testJettonBurnNotification } from './utils';
 import { Op, Errors } from '../wrappers/JettonConstants';
 import { calcStorageFee, collectCellStats, computeCellForwardFees, computeFwdFees, computeFwdFeesVerbose, computeGasFee, computeMessageForwardFees, FullFees, GasPrices, getGasPrices, getMsgPrices, getStoragePrices, computedGeneric, storageGeneric, MsgPrices, setGasPrice, setMsgPrices, setStoragePrices, StorageStats, StorageValue } from '../gasUtils';
-import { sha256 } from 'ton-crypto';
+import { sha256 } from '@ton/crypto';
 
 /*
    These tests check compliance with the TEP-74 and TEP-89,
@@ -2072,7 +2072,7 @@ describe('JettonWallet', () => {
             const minterSmc = await blockchain.getContract(jettonMinter.address);
 
             // Sending message but only processing first step of tx chain
-            let res = minterSmc.receiveMessage(internal({
+            let res = await minterSmc.receiveMessage(internal({
                 from: deployer.address,
                 to: jettonMinter.address,
                 body: mintMsg,
@@ -2104,7 +2104,7 @@ describe('JettonWallet', () => {
 
             const walletSmc = await blockchain.getContract(deployerJettonWallet.address);
 
-            const res = walletSmc.receiveMessage(internal({
+            const res = await walletSmc.receiveMessage(internal({
                 from: deployer.address,
                 to: deployerJettonWallet.address,
                 body: transferMsg,
@@ -2138,7 +2138,7 @@ describe('JettonWallet', () => {
 
             const walletSmc = await blockchain.getContract(deployerJettonWallet.address);
 
-            const res = walletSmc.receiveMessage(internal({
+            const res = await walletSmc.receiveMessage(internal({
                 from: jettonMinter.address,
                 to: deployerJettonWallet.address,
                 body: burnMsg,

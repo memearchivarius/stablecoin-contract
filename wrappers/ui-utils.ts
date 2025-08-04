@@ -1,6 +1,6 @@
 import {NetworkProvider, sleep, UIProvider} from '@ton/blueprint';
 import {Address, beginCell, Builder, Cell, Dictionary, DictionaryValue, Slice} from "@ton/core";
-import {sha256} from 'ton-crypto';
+import {sha256} from '@ton/crypto';
 import {TonClient4} from "@ton/ton";
 import {base64Decode} from "@ton/sandbox/dist/utils/base64";
 import {LOCK_TYPES, LockType} from "./JettonMinter";
@@ -248,14 +248,21 @@ export const sendToIndex = async (method: string, params: any, provider: Network
     const testnetRpc = 'https://testnet.toncenter.com/api/v3/';
     const rpc = isTestnet ? testnetRpc : mainnetRpc;
 
-    const apiKey = (provider.api() as any).api.parameters.apiKey!; // todo: provider.api().parameters.apiKey is undefined
+    // Попробуем получить API-ключ из provider, если не передан явно
+    const finalApiKey = process.env.TONCENTER_API_KEY || (provider.api() as any)?.api?.parameters?.apiKey;
+    
+    if (!finalApiKey) {
+        throw new Error('TON Center API key is required. Set TONCENTER_API_KEY environment variable or pass it as parameter.');
+    }
 
     const headers = {
         'Content-Type': 'application/json',
-        'X-API-Key': apiKey
+        'X-API-Key': finalApiKey
     };
 
-    const response = await fetch(rpc + method + '?' + new URLSearchParams(params), {
+    const url = rpc + method + '?' + new URLSearchParams(params);
+
+    const response = await fetch(url, {
         method: 'GET',
         headers: headers,
     });

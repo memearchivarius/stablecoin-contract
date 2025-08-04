@@ -35,7 +35,7 @@ export const checkJettonWallet = async (
 
     // Account State and Data
 
-    const result = await sendToIndex('account', {address: addressToString(jettonWalletAddress)}, provider);
+    const result = await sendToIndex('addressInformation', {address: addressToString(jettonWalletAddress), use_v2: 'true'}, provider);
     write('Contract status: ' + result.status);
 
     assert(result.status === 'active', "Contract not active", ui);

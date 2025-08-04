@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import {compile, NetworkProvider} from '@ton/blueprint';
 import {
     addressToString,
